@@ -1,168 +1,235 @@
 # Claude Code CLI Tools Wiki
 
-Shareable documentation and management system for Claude Code CLI tools.
+**Bounded Context**: CLI Tools Infrastructure Layer
 
-**Clone this wiki first** → then clone tools into sibling folder → configure tokens.
+→ **Architecture**: Domain-Driven Onion - this wiki documents the infrastructure layer
+→ **Parent**: Root CLAUDE.md (Application Layer)
+→ **Sub-Maintenance**: `skills/maintenance.md`
 
-## Quick Start
+---
 
-### 1. Clone Wiki
+## Domain-Driven Onion Context
 
-```bash
-# Clone this as your tools management hub
-git clone https://github.com/sftmlg/cli-tools-wiki.git
-cd cli-tools-wiki
+This wiki is part of the **infrastructure layer** in the DDD Onion Architecture:
+
+```
+Application Layer (Root CLAUDE.md)
+    ↓ routes to
+Domain Service (cli-tools-wiki/skills/maintenance.md)
+    ↓ defines structure for
+Infrastructure Layer (claude-code-cli-tools/{tool}/README.md)
 ```
 
-### 2. Setup Workspace
+**Context-First Principle**: Before using ANY tool, Claude loads context:
+1. Keyword triggers → select tool folder
+2. Read README.md → learn Quick Start invocation
+3. Execute with correct parameters
 
-```bash
-# Create sibling directories
-./scripts/tool-wizard.sh setup
+---
 
-# Results in:
-# parent-folder/
-# ├── cli-tools-wiki/   (this wiki)
-# ├── tools/            (your cloned tools)
-# └── tokens/           (credentials - local only)
+## Philosophy: LLM-Native Tool Routing
+
+**Core Concept**: When a user says "look at my calendar", Claude automatically knows to use `calendar-manager`.
+
+This works through a **keyword-based routing system**:
+
+1. **Each tool declares its keywords** in its README.md
+2. **Root CLAUDE.md references** these keywords in a compact table
+3. **Maintenance verifies** keywords are properly back-linked
+4. **Result**: Natural language → tool routing
+
+**This is LLM-based, not script-based**. Claude reads files, understands structure, and performs routing.
+
+---
+
+## Where To Read What
+
+| Question | Location |
+|----------|----------|
+| What tools exist? | `tools/inventory.md` |
+| How to create a tool? | `docs/adding-tools.md` |
+| What structure must tools have? | `skills/maintenance.md` |
+| How does keyword routing work? | This README + `skills/maintenance.md` |
+| How to configure tokens? | `docs/token-setup.md` |
+| Security verification? | `scripts/verify-security.sh` |
+
+---
+
+## How Keyword Routing Works
+
+### Layer 1: Tool Level (Source of Truth)
+
+Each tool's README.md has a Keywords section:
+
+```markdown
+## Keywords
+
+`calendar`, `gcal`, `today`, `tomorrow`, `week`, `schedule`
 ```
 
-### 3. Clone Tools
+### Layer 2: Root CLAUDE.md (Compact Reference)
 
-```bash
-# Interactive selection
-./scripts/tool-wizard.sh clone
+Root has a keyword triggers table:
 
-# Or list available tools first
-./scripts/tool-wizard.sh list
+```markdown
+| Keywords | Tool | Run Command |
+|----------|------|-------------|
+| calendar, gcal, today, week | calendar-manager | `node index.mjs <cmd>` |
 ```
 
-### 4. Configure Tokens
+### Layer 3: Maintenance (Verification)
 
-See [docs/token-setup.md](docs/token-setup.md)
+Maintenance skill verifies all tool keywords are back-linked in root.
 
-### 5. Run Maintenance
+**Flow**: User says keyword → Claude checks root table → routes to tool
 
-```bash
-./scripts/maintenance.sh ../tools
+---
+
+## Tool Structure Requirements
+
+Every tool MUST have:
+
+| File | Purpose |
+|------|---------|
+| `README.md` | Documentation with **Keywords section** |
+| `package.json` | Dependencies and npm scripts |
+| `.gitignore` | Block tokens, .env, node_modules |
+| `src/index.ts` | CLI entry point |
+
+### Keywords Section (Required)
+
+```markdown
+## Keywords
+
+`keyword1`, `keyword2`, `keyword3`
+
+These keywords trigger automatic routing to this tool.
+```
+
+→ Full structure spec: `skills/maintenance.md`
+
+---
+
+## Maintenance (LLM-Based)
+
+Maintenance is performed by Claude, not scripts.
+
+**Process**:
+1. Read `tools/inventory.md` → get tool list
+2. For each tool → verify structure, extract keywords
+3. Compare to root CLAUDE.md → verify back-links
+4. Report issues → suggest fixes
+
+**Trigger**: "run maintenance", "check tools", "verify tools"
+
+→ Full process: `skills/maintenance.md`
+
+---
+
+## Tool Creation (LLM-Based)
+
+When creating new tools, Claude:
+
+1. Checks inventory for existing similar tool
+2. Creates structure using `docs/adding-tools.md` templates
+3. Adds Keywords section to README
+4. Updates inventory
+5. Runs security verification
+
+**Trigger**: "create tool", "new tool", "add tool"
+
+→ Full process: `skills/tool-setup.md`
+
+---
+
+## Directory Structure
+
+```
+cli-tools-wiki/
+├── README.md                    # Philosophy + routing explanation (this file)
+├── docs/
+│   ├── adding-tools.md          # Tool creation templates
+│   ├── token-setup.md           # Credential configuration
+│   ├── submodule-usage.md       # Git submodule workflows
+│   └── convert-to-repo.md       # Convert local code to repo
+├── scripts/
+│   └── verify-security.sh       # Security verification (only script)
+├── skills/
+│   ├── maintenance.md           # LLM-based maintenance skill
+│   └── tool-setup.md            # Tool creation skill
+└── tools/
+    └── inventory.md             # Tool catalog (names, descriptions)
 ```
 
 ---
 
-## Structure
+## LLM-Based Operations
 
-```
-cli-tools-wiki/
-├── README.md                    # This file
-├── docs/
-│   ├── token-setup.md           # Credential configuration
-│   ├── submodule-usage.md       # Git submodule workflows
-│   ├── adding-tools.md          # Creating new tools (templates)
-│   ├── tool-maintenance.md      # Maintenance procedures
-│   └── convert-to-repo.md       # Convert local code to repo
-├── scripts/
-│   ├── tool-wizard.sh           # Interactive tool management
-│   ├── maintenance.sh           # Health check for tools
-│   └── verify-security.sh       # Security verification
-├── skills/
-│   └── tool-setup.md            # Activation skill for Claude
-└── tools/
-    └── inventory.md             # Complete tools catalog
-```
+All operations except security verification are performed by Claude directly:
 
-## Documentation Index
+| Task | Method |
+|------|--------|
+| Security check | `scripts/verify-security.sh` (pattern matching) |
+| Structure verification | Claude reads files |
+| Keyword extraction | Claude parses README |
+| Back-link verification | Claude compares files |
+| Tool creation | Claude follows templates |
+| Maintenance | Claude runs verification process |
 
-| Document | Purpose |
-|----------|---------|
-| [Token Setup](docs/token-setup.md) | Configure authentication tokens |
-| [Adding Tools](docs/adding-tools.md) | Create new CLI tools with templates |
-| [Tool Maintenance](docs/tool-maintenance.md) | Keep tools healthy and secure |
-| [Convert to Repo](docs/convert-to-repo.md) | Turn local code into git repos |
-| [Submodule Usage](docs/submodule-usage.md) | Git submodule workflows |
-| [Tools Inventory](tools/inventory.md) | Complete catalog of available tools |
+---
 
-## Scripts
+## Integration Points
 
-| Script | Usage | Purpose |
-|--------|-------|---------|
-| `tool-wizard.sh` | `./scripts/tool-wizard.sh [cmd]` | Interactive tool management |
-| `maintenance.sh` | `./scripts/maintenance.sh [path]` | Health check for tools |
-| `verify-security.sh` | `./scripts/verify-security.sh [path]` | Security verification |
-
-### Tool Wizard Commands
-
-```bash
-./scripts/tool-wizard.sh setup    # Initial workspace setup
-./scripts/tool-wizard.sh list     # List available tools
-./scripts/tool-wizard.sh clone    # Clone tools interactively
-./scripts/tool-wizard.sh create   # Create new tool with templates
-```
-
-## Integration with CLAUDE.md
-
-### Tool Creation Hook
-
-Add to your project's CLAUDE.md:
+### From Root CLAUDE.md
 
 ```markdown
+### CLI Tool Keyword Routing
+When user mentions tool-related keywords:
+→ Check keyword triggers table in this file
+→ Route to appropriate tool from `claude-code-cli-tools/`
+
 ### Tool Creation Hook
-**TRIGGER**: "create tool", "new tool", "add tool", "tool setup"
-
-**Behavior**:
-1. Check `cli-tools-wiki/tools/inventory.md` for existing tool
-2. If exists → clone it
-3. If not → follow `cli-tools-wiki/docs/adding-tools.md`
-
-→ See `cli-tools-wiki/skills/tool-setup.md` for full activation spec.
-```
+When "create tool" or "new tool" mentioned:
+→ Check `cli-tools-wiki/tools/inventory.md`
+→ Follow `cli-tools-wiki/docs/adding-tools.md`
 
 ### Maintenance Integration
+When running repository maintenance:
+→ Activate `cli-tools-wiki/skills/maintenance.md`
+→ Verify tool keywords are back-linked
+```
 
-Add to maintenance skill:
+### From Root Maintenance Skill
 
 ```markdown
 ### CLI Tools Maintenance
-When maintaining repository, include tools check:
-- Run: `./cli-tools-wiki/scripts/maintenance.sh ./tools`
-- Security: `./cli-tools-wiki/scripts/verify-security.sh ./tools`
-
-→ See `cli-tools-wiki/docs/tool-maintenance.md` for procedures.
+→ Activate `cli-tools-wiki/skills/maintenance.md`
+→ Follow LLM-based verification process
 ```
 
-## Workspace Layout
+---
 
-After setup, your workspace looks like:
+## Quick Reference
 
-```
-your-workspace/
-├── cli-tools-wiki/              # This wiki
-│   ├── docs/                    # All documentation
-│   ├── scripts/                 # Management scripts
-│   ├── skills/                  # Claude activation skills
-│   └── tools/                   # Tool inventory
-├── tools/                       # Cloned tools (sibling)
-│   ├── email-manager/
-│   ├── calendar-manager/
-│   ├── drive-manager/
-│   └── ...
-└── tokens/                      # Credentials (sibling, local only)
-    ├── credentials.json         # Shared Google OAuth
-    ├── email-manager/
-    │   └── business.json
-    └── ...
-```
+**User says**: "check my calendar today"
+**Claude does**:
+1. Recognizes "calendar", "today" as keywords
+2. Looks up in root CLAUDE.md keyword table
+3. Routes to `calendar-manager`
+4. Runs: `cd claude-code-cli-tools/calendar-manager && node index.mjs today`
 
-## Design Principles
+**User says**: "run maintenance on tools"
+**Claude does**:
+1. Activates `cli-tools-wiki/skills/maintenance.md`
+2. Reads inventory → gets tool list
+3. Checks each tool's structure
+4. Verifies keywords back-linked in root
+5. Reports issues
 
-- **Wiki First**: Clone wiki before tools for management capabilities
-- **Generic**: No project-specific paths or credentials
-- **Secure**: Tokens in sibling folder, never committed
-- **Modular**: Each tool works independently
-- **Self-Documenting**: Full templates and procedures included
+---
 
 ## Collaborators
 
-All tools accessible by:
 - sftmlg (owner)
 - stydav (collaborator)
 
