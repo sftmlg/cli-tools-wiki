@@ -1,6 +1,6 @@
 # Tool Setup Skill
 
-**Purpose**: Activate when creating, maintaining, or managing CLI tools.
+**Purpose**: Activate when creating, maintaining, or managing CLI tools. All operations are LLM-based.
 
 ## Activation Triggers
 
@@ -13,42 +13,50 @@
 
 **BEFORE creating a new tool:**
 
-1. **Check inventory first**: Search `tools/inventory.md` for existing tool
+1. **Check inventory first**: Read `tools/inventory.md` for existing tool
 2. **Check GitHub**: `gh repo view sftmlg/{potential-name}`
 3. **Only create if no match** - prefer cloning existing over creating new
 
-## Procedures
+## Procedures (LLM-Based)
 
 ### Creating New Tool
 
-1. Load: `cli-tools-wiki/docs/adding-tools.md`
-2. Or run: `./cli-tools-wiki/scripts/tool-wizard.sh create`
-3. Follow templates for:
-   - .gitignore (required)
-   - tsconfig.json
-   - package.json
-   - src/config.ts (token reference)
-   - src/index.ts
-   - README.md
+Claude performs these steps:
+1. Read `cli-tools-wiki/docs/adding-tools.md` for templates
+2. Create required files:
+   - `.gitignore` (required - blocks tokens)
+   - `tsconfig.json`
+   - `package.json`
+   - `src/config.ts` (token reference)
+   - `src/index.ts`
+   - `README.md` with **Keywords section**
+3. Create GitHub repo: `gh repo create sftmlg/{name} --private`
+4. Add collaborators
+5. Update inventory
 
 ### Cloning Existing Tools
 
-1. Run wizard: `./cli-tools-wiki/scripts/tool-wizard.sh clone`
-2. Or manual: `gh repo clone sftmlg/{tool-name} tools/{tool-name}`
-3. Create token folder: `mkdir -p tokens/{tool-name}`
+Claude performs:
+1. `gh repo clone sftmlg/{tool-name} claude-code-cli-tools/{tool-name}`
+2. `mkdir -p tokens/{tool-name}`
+3. Verify structure
 
 ### Converting Local Code to Repo
 
-1. Load: `cli-tools-wiki/docs/convert-to-repo.md`
+Claude performs:
+1. Read `cli-tools-wiki/docs/convert-to-repo.md`
 2. Verify no secrets: `grep -rE 'AIzaSy|sk-|ghp_' .`
-3. Add required files (.gitignore, README)
+3. Add required files (.gitignore, README with Keywords)
 4. Create repo: `gh repo create sftmlg/{name} --source . --push`
 
 ### Running Maintenance
 
-1. Full check: `./cli-tools-wiki/scripts/maintenance.sh ./tools`
-2. Security only: `./cli-tools-wiki/scripts/verify-security.sh ./tools`
-3. Quick check: `./cli-tools-wiki/scripts/maintenance.sh ./tools --quick`
+Claude performs (see `skills/maintenance.md`):
+1. Read tool list from inventory
+2. Verify each tool has required structure
+3. Extract keywords from README
+4. Verify back-links in root CLAUDE.md
+5. Security check: `./scripts/verify-security.sh`
 
 ## Required Files for Every Tool
 
@@ -59,7 +67,7 @@
 | `package.json` | Dependencies | adding-tools.md |
 | `src/config.ts` | Token paths | adding-tools.md |
 | `src/index.ts` | Entry point | adding-tools.md |
-| `README.md` | Documentation | adding-tools.md |
+| `README.md` | Documentation **with Keywords section** | adding-tools.md |
 
 ## Token Configuration Rules
 
@@ -81,52 +89,44 @@
 ```markdown
 ### Tool Creation Hook
 When "create tool" or "new tool" mentioned:
-→ Activate cli-tools-wiki skill
+→ Activate cli-tools-wiki/skills/tool-setup.md
 → Check inventory before creating
 → Follow adding-tools.md templates
+→ Ensure README has Keywords section
 ```
 
 ### Maintenance Skill Integration
 ```markdown
 ### CLI Tools Maintenance
-Run wiki maintenance as part of repo maintenance:
-→ ./cli-tools-wiki/scripts/maintenance.sh ./tools
+→ Activate cli-tools-wiki/skills/maintenance.md
+→ LLM-based verification process
+→ Security check: ./scripts/verify-security.sh
 ```
 
-## Quick Reference
+## Quick Reference (LLM Commands)
 
-```bash
-# List available tools
-./cli-tools-wiki/scripts/tool-wizard.sh list
+Claude performs these operations when triggered:
 
-# Clone tools interactively
-./cli-tools-wiki/scripts/tool-wizard.sh clone
-
-# Create new tool
-./cli-tools-wiki/scripts/tool-wizard.sh create
-
-# Run maintenance
-./cli-tools-wiki/scripts/maintenance.sh ./tools
-
-# Security check
-./cli-tools-wiki/scripts/verify-security.sh ./tools
-```
+| User Says | Claude Does |
+|-----------|-------------|
+| "list tools" | Reads `tools/inventory.md` |
+| "clone email-manager" | `gh repo clone sftmlg/email-manager` |
+| "create new tool" | Follows templates in `docs/adding-tools.md` |
+| "run maintenance" | Activates `skills/maintenance.md` |
+| "security check" | `./scripts/verify-security.sh ./claude-code-cli-tools` |
 
 ## Workspace Structure
 
 ```
-workspace/
-├── cli-tools-wiki/          # This wiki (clone first)
-│   ├── docs/                # Documentation
-│   ├── scripts/             # Wizard, maintenance, security
-│   ├── skills/              # This skill file
-│   └── tools/               # Inventory
-├── tools/                    # Cloned tools (sibling)
+software-moling/
+├── cli-tools-wiki/           # Documentation wiki
+│   ├── docs/                 # Templates
+│   ├── scripts/              # verify-security.sh only
+│   ├── skills/               # LLM-based skills
+│   └── tools/                # Inventory
+├── claude-code-cli-tools/    # Actual tools
 │   ├── email-manager/
 │   ├── calendar-manager/
+│   ├── tokens/               # Centralized credentials
 │   └── ...
-└── tokens/                   # Credentials (sibling)
-    ├── credentials.json     # Shared Google OAuth
-    ├── email-manager/
-    └── ...
 ```

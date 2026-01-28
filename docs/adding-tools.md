@@ -258,6 +258,12 @@ main().catch(console.error);
 
 {Brief description of what this tool does}
 
+## Keywords
+
+`keyword1`, `keyword2`, `keyword3`
+
+These keywords trigger automatic routing to this tool when mentioned in user requests.
+
 ## Setup
 
 ```bash
@@ -347,6 +353,7 @@ git push origin main
 - [ ] No credentials in source code
 - [ ] tsconfig.json configured for ES2022/NodeNext
 - [ ] README documents all commands
+- [ ] **README has Keywords section** (required for routing)
 
 ### If Submodule
 - [ ] Added to claude-code-cli-tools/
