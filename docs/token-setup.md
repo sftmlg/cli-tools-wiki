@@ -28,7 +28,9 @@ your-workspace/
     │   └── token.json
     ├── getmyinvoices-manager/
     ├── linkedin-tool/
-    └── nano-banana/
+    ├── nano-banana/
+    └── whatsapp-manager/
+        └── session/          # WhatsApp Web session (Puppeteer/LocalAuth)
 ```
 
 ## Security Rules
@@ -133,6 +135,23 @@ pnpm start setup
    ```bash
    echo "GEMINI_API_KEY=your-key" > tokens/nano-banana/.env
    ```
+
+### WhatsApp (whatsapp-manager)
+
+Uses whatsapp-web.js with QR code pairing (personal WhatsApp, not Business API):
+
+1. **First-time Setup**
+   ```bash
+   cd whatsapp-manager
+   pnpm start connect
+   # QR code saved to /tmp/whatsapp-qr.png
+   # Open image and scan with WhatsApp > Linked Devices
+   ```
+
+2. **Session Storage**
+   - Session auto-saved to `tokens/whatsapp-manager/session/`
+   - No QR needed for subsequent connections
+   - Session invalidates if WhatsApp mobile logs out
 
 ## Cross-Machine Sync
 
