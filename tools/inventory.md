@@ -20,6 +20,7 @@ Complete catalog of available Claude Code CLI tools.
 | [image-editor](#image-editor) | Sharp-based image manipulation | No |
 | [image-tools](#image-tools) | Python image utilities | No |
 | [linkedin-tool](#linkedin-tool) | LinkedIn messaging/posts | Session cookies |
+| [mega-manager](#mega-manager) | Mega.nz file management | Mega credentials |
 | [nano-banana](#nano-banana) | Gemini image generation | Gemini API key |
 | [profile-generator](#profile-generator) | Profile generation | No |
 | [seo-audit](#seo-audit) | SEO/performance audit | No |
@@ -167,6 +168,19 @@ pnpm start setup               # Setup session
 pnpm start messages            # Fetch messages
 pnpm start post "Content"      # Create post
 pnpm start profile username    # View profile
+```
+
+### mega-manager
+**Purpose**: Mega.nz cloud storage file management
+**Auth**: Mega email/password
+**Commands**:
+```bash
+pnpm start auth                # Authenticate
+pnpm start list                # List root files
+pnpm start list /folder        # List folder
+pnpm start download /path      # Download files
+pnpm start sync /mega ./local  # Sync to local
+pnpm start info                # Account info
 ```
 
 ### nano-banana
