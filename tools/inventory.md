@@ -75,12 +75,14 @@ pnpm run transcribe    # Transcribe videos
 ```
 
 ### document-generator
-**Purpose**: Generate PDF invoices and contracts using React-PDF
-**Auth**: None
+**Purpose**: Generate PDF invoices, contracts, proposals using React-PDF. Convert PDF to DOCX.
+**Auth**: None (pdf2docx Python library required for convert)
 **Commands**:
 ```bash
-node index.mjs invoice      # Generate invoice
-node index.mjs contract     # Generate contract
+node index.mjs invoice --data ./invoice.json    # Generate invoice
+node index.mjs contract --data ./contract.json  # Generate contract
+node index.mjs proposal --data ./proposal.json  # Generate proposal
+node index.mjs convert ./document.pdf           # Convert PDF to DOCX
 ```
 
 ### drive-manager
