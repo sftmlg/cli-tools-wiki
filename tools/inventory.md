@@ -23,6 +23,7 @@ Complete catalog of available Claude Code CLI tools.
 | [linkedin-tool](#linkedin-tool) | LinkedIn messaging/posts | Session cookies |
 | [mega-manager](#mega-manager) | Mega.nz file management | Mega credentials |
 | [nano-banana](#nano-banana) | Gemini image generation | Gemini API key |
+| [thumbnail-generator](#thumbnail-generator) | YouTube thumbnail creation | Gemini API key |
 | [profile-generator](#profile-generator) | Profile generation | No |
 | [seo-audit](#seo-audit) | SEO/performance audit | No |
 | [service-cli](#service-cli) | Relay service management | No |
@@ -202,6 +203,16 @@ pnpm start info                # Account info
 **Commands**:
 ```bash
 pnpm run generate "prompt"     # Generate image
+```
+
+### thumbnail-generator
+**Purpose**: YouTube thumbnail creation with brand templates
+**Auth**: Gemini API key (via nano-banana)
+**Commands**:
+```bash
+pnpm start preview --brand tap-in           # Show brand config
+pnpm start generate --title "Video Title"   # Generate prompt variations
+pnpm start batch --file titles.txt          # Batch processing
 ```
 
 ### profile-generator
