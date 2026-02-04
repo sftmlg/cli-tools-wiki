@@ -19,6 +19,7 @@ Complete catalog of available Claude Code CLI tools.
 | [guide-creator](#guide-creator) | PDF guide generation | No |
 | [image-editor](#image-editor) | Sharp-based image manipulation | No |
 | [image-tools](#image-tools) | Python image utilities | No |
+| [lead-sourcer](#lead-sourcer) | B2B lead data sourcing (Apollo.io) | API key |
 | [linkedin-tool](#linkedin-tool) | LinkedIn messaging/posts | Session cookies |
 | [mega-manager](#mega-manager) | Mega.nz file management | Mega credentials |
 | [nano-banana](#nano-banana) | Gemini image generation | Gemini API key |
@@ -159,6 +160,16 @@ pnpm start compress input.jpg # Compress image
 **Commands**:
 ```bash
 python main.py process image.jpg
+```
+
+### lead-sourcer
+**Purpose**: B2B lead data sourcing and enrichment via Apollo.io API
+**Auth**: Apollo.io API key
+**Commands**:
+```bash
+pnpm start search --region "Tirol" --min-employees 50    # Search companies
+pnpm start enrich -i companies.json -o enriched.json     # Add contacts
+pnpm start export -i enriched.json -o leads.csv          # Export CSV
 ```
 
 ### linkedin-tool
